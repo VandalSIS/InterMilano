@@ -1,0 +1,15 @@
+{
+  "short_name": "INTERPOL",
+  "name": "INTERPOL - International Criminal Police Organization",
+  "icons": [
+    {
+      "src": "https://sagiuomwnhl6t6cz.public.blob.vercel-storage.com/logo.png",
+      "sizes": "any",
+      "type": "image/png"
+    }
+  ],
+  "start_url": ".",
+  "display": "standalone",
+  "theme_color": "#1a365d",
+  "background_color": "#ffffff"
+}
