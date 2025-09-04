@@ -1,7 +1,8 @@
-import React from 'react';
+import React, { useEffect, useRef } from 'react';
 import styled from 'styled-components';
 import { motion } from 'framer-motion';
 import { LocationIcon, PhoneIcon, EmailIcon, ClockIcon, ComputerIcon, ShieldIcon, GlobeIcon } from '../components/CSSIcons';
+import CrimeReportForm from '../components/CrimeReportForm';
 
 const ContactContainer = styled.div`
   min-height: 100vh;
@@ -36,8 +37,26 @@ const HeroSubtitle = styled.p`
   font-size: var(--font-size-xl);
   color: var(--color-gray-200);
   max-width: 800px;
-  margin: 0 auto;
+  margin: 0 auto var(--spacing-2xl) auto;
   line-height: 1.6;
+`;
+
+const HeroButton = styled(motion.button)`
+  background: var(--color-white);
+  color: var(--color-primary);
+  border: none;
+  padding: var(--spacing-lg) var(--spacing-2xl);
+  border-radius: var(--radius-md);
+  font-size: var(--font-size-lg);
+  font-weight: 600;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  
+  &:hover {
+    background: var(--color-gray-100);
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-lg);
+  }
 `;
 
 const Section = styled.section`
@@ -227,55 +246,78 @@ const ResourceItem = styled.div`
 `;
 
 const Contact = () => {
+  const crimeReportRef = useRef(null);
+
+  useEffect(() => {
+    // Scroll to crime report form when component mounts
+    if (crimeReportRef.current) {
+      setTimeout(() => {
+        crimeReportRef.current.scrollIntoView({ 
+          behavior: 'smooth', 
+          block: 'start' 
+        });
+      }, 100);
+    }
+  }, []);
+
+  const scrollToCrimeReport = () => {
+    if (crimeReportRef.current) {
+      crimeReportRef.current.scrollIntoView({ 
+        behavior: 'smooth', 
+        block: 'start' 
+      });
+    }
+  };
+
   const offices = [
     {
       icon: LocationIcon,
-      title: 'General Secretariat',
+      title: 'INTERPOL Ottawa - National Central Bureau',
+      address: '1200 Vanier Parkway, Ottawa, ON K1A 0R2, Canada',
+      phone: '+1 613 993-0000',
+      email: 'interpol.ottawa@rcmp-grc.gc.ca'
+    },
+    {
+      icon: LocationIcon,
+      title: 'RCMP Headquarters',
+      address: '73 Leikin Drive, Ottawa, ON K1A 0R2, Canada',
+      phone: '+1 613 993-0000',
+      email: 'info@rcmp-grc.gc.ca'
+    },
+    {
+      icon: LocationIcon,
+      title: 'INTERPOL General Secretariat',
       address: '200 Quai Charles de Gaulle, 69006 Lyon, France',
       phone: '+33 4 72 44 70 00',
       email: 'contact@interpol.int'
     },
     {
-      icon: GlobeIcon,
-      title: 'Regional Bureau for Asia and the Pacific',
-      address: 'Bangkok, Thailand',
-      phone: '+66 2 205 4000',
-      email: 'bangkok@interpol.int'
-    },
-    {
-      icon: GlobeIcon,
-      title: 'Regional Bureau for the Americas',
-      address: 'Buenos Aires, Argentina',
-      phone: '+54 11 4809 2000',
-      email: 'buenosaires@interpol.int'
-    },
-    {
-      icon: GlobeIcon,
-      title: 'Regional Bureau for Africa',
-      address: 'Abidjan, Côte d\'Ivoire',
-      phone: '+225 20 30 40 50',
-      email: 'abidjan@interpol.int'
+      icon: LocationIcon,
+      title: 'Emergency Services',
+      address: 'Available 24/7 across Canada',
+      phone: '911',
+      email: 'emergency@rcmp-grc.gc.ca'
     }
   ];
 
   const emergencyContacts = [
     {
       icon: ClockIcon,
-      title: '24/7 Command and Coordination Centre',
-      description: 'For urgent police assistance and coordination',
-      phone: '+33 4 72 44 70 00'
+      title: 'RCMP Emergency Response',
+      description: 'For urgent police assistance and coordination in Canada',
+      phone: '911'
     },
     {
       icon: ComputerIcon,
-      title: 'Cybercrime Reporting',
-      description: 'Report cybercrime incidents',
-      email: 'cybercrime@interpol.int'
+      title: 'Canadian Cybercrime Reporting',
+      description: 'Report cybercrime incidents in Canada',
+      email: 'cybercrime@rcmp-grc.gc.ca'
     },
     {
       icon: ShieldIcon,
-      title: 'Terrorism Hotline',
-      description: 'Counter-terrorism intelligence',
-      phone: '+33 4 72 44 70 00'
+      title: 'National Security Hotline',
+      description: 'Counter-terrorism and national security intelligence',
+      phone: '+1 613 993-0000'
     }
   ];
 
@@ -318,18 +360,33 @@ const Contact = () => {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8 }}
           >
-            <HeroTitle>Contact INTERPOL</HeroTitle>
-            <HeroSubtitle>
-              Get in touch with the world's largest international police organization. 
-              We're here to support law enforcement agencies worldwide.
-            </HeroSubtitle>
+                         <HeroTitle>Report a Crime to INTERPOL Canada</HeroTitle>
+             <HeroSubtitle>
+               Report criminal activity, get assistance, and connect with Canadian law enforcement. 
+               Your safety and security are our priority. Use the form below to submit your report.
+             </HeroSubtitle>
+             <HeroButton
+               initial={{ opacity: 0, y: 20 }}
+               animate={{ opacity: 1, y: 0 }}
+               transition={{ duration: 0.6, delay: 0.4 }}
+               onClick={scrollToCrimeReport}
+             >
+               Start Crime Report →
+             </HeroButton>
           </motion.div>
         </Container>
       </HeroSection>
 
-      <Section>
-        <Container>
-          <SectionTitle>Headquarters & Regional Offices</SectionTitle>
+             <Section ref={crimeReportRef}>
+         <Container>
+           <SectionTitle>Report a Crime</SectionTitle>
+           <CrimeReportForm />
+         </Container>
+       </Section>
+
+       <Section>
+         <Container>
+           <SectionTitle>Headquarters & Regional Offices</SectionTitle>
           
           <motion.div
             variants={containerVariants}
@@ -465,9 +522,9 @@ const Contact = () => {
               </ContactHeader>
               <ContactInfo>
                 <p>For media inquiries and press releases, please contact our Communications Office.</p>
-                <ContactButton href="mailto:media@interpol.int">
-                  ✉️ media@interpol.int
-                </ContactButton>
+                               <ContactButton href="mailto:media@rcmp-grc.gc.ca">
+                 ✉️ media@rcmp-grc.gc.ca
+               </ContactButton>
               </ContactInfo>
             </ContactCard>
           </motion.div>
