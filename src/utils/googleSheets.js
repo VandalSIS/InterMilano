@@ -1,7 +1,7 @@
 // Google Sheets integration for contact form submissions
 // This will send form data to a Google Sheet via Google Apps Script
 
-const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxy91Eza9RIks6qT7uttAEE9REsSw-jn7LRFqFeZwuY5g_nhhCl1TEs7v0d9AGp-IVj/exec';
+const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyhDr74eZBDNCfE4PB_MRkdkDVKkOdONiE6kXVr6YRg23UgRjZgQMs_Dm7hmgtO0kvM/exec';
 
 export const submitToGoogleSheets = async (formData) => {
   try {
