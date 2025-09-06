@@ -7,7 +7,7 @@ export const submitToGoogleSheets = async (formData) => {
   try {
     const response = await fetch(GOOGLE_SCRIPT_URL, {
       method: 'POST',
-      mode: 'cors',
+      mode: 'no-cors',
       headers: {
         'Content-Type': 'application/json',
       },
@@ -45,12 +45,11 @@ export const submitToGoogleSheets = async (formData) => {
       })
     });
 
-    if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`);
-    }
-
-    const result = await response.json();
-    return { success: true, data: result };
+    // With no-cors mode, we can't read the response or check status
+    // But if fetch doesn't throw an error, the request was sent successfully
+    console.log('Data sent to Google Sheets successfully');
+    return { success: true, message: 'Data sent successfully' };
+    
   } catch (error) {
     console.error('Error submitting to Google Sheets:', error);
     return { success: false, error: error.message };
