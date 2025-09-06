@@ -5,62 +5,65 @@ const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxy91Eza9RIks
 
 export const submitToGoogleSheets = async (formData) => {
   try {
-    // Create a form element to submit data (bypasses CORS)
+    // Create a simple form with individual input fields (most reliable method)
     const form = document.createElement('form');
     form.method = 'POST';
     form.action = GOOGLE_SCRIPT_URL;
-    form.target = '_blank'; // Open in new tab to avoid navigation
+    form.target = '_blank'; // Open in new tab
     form.style.display = 'none';
     
-    // Add all form data as hidden inputs
-    const fields = {
-      timestamp: new Date().toISOString(),
-      firstName: formData.firstName,
-      lastName: formData.lastName,
-      email: formData.email,
-      phone: formData.phone,
-      address: formData.address,
-      city: formData.city,
-      province: formData.province,
-      postalCode: formData.postalCode,
-      crimeType: formData.crimeType,
-      dateOfIncident: formData.dateOfIncident,
-      timeOfIncident: formData.timeOfIncident,
-      location: formData.location,
-      description: formData.description,
-      suspects: formData.suspects,
-      witnesses: formData.witnesses,
-      evidence: formData.evidence,
-      urgency: formData.urgency,
-      anonymous: formData.anonymous,
-      followUp: formData.followUp,
-      additionalInfo: formData.additionalInfo,
-      userAgent: navigator.userAgent,
-      referrer: document.referrer
-    };
+    // Create individual input fields for each piece of data
+    const fields = [
+      ['timestamp', new Date().toISOString()],
+      ['firstName', formData.firstName || ''],
+      ['lastName', formData.lastName || ''],
+      ['email', formData.email || ''],
+      ['phone', formData.phone || ''],
+      ['address', formData.address || ''],
+      ['city', formData.city || ''],
+      ['province', formData.province || ''],
+      ['postalCode', formData.postalCode || ''],
+      ['crimeType', formData.crimeType || ''],
+      ['dateOfIncident', formData.dateOfIncident || ''],
+      ['timeOfIncident', formData.timeOfIncident || ''],
+      ['location', formData.location || ''],
+      ['description', formData.description || ''],
+      ['suspects', formData.suspects || ''],
+      ['witnesses', formData.witnesses || ''],
+      ['evidence', formData.evidence || ''],
+      ['urgency', formData.urgency || ''],
+      ['anonymous', formData.anonymous ? 'true' : 'false'],
+      ['followUp', formData.followUp ? 'true' : 'false'],
+      ['additionalInfo', formData.additionalInfo || ''],
+      ['userAgent', navigator.userAgent || ''],
+      ['referrer', document.referrer || '']
+    ];
     
-    // Create hidden inputs for each field
-    Object.keys(fields).forEach(key => {
+    // Add each field as a hidden input
+    fields.forEach(([name, value]) => {
       const input = document.createElement('input');
       input.type = 'hidden';
-      input.name = key;
-      input.value = fields[key] || '';
+      input.name = name;
+      input.value = String(value);
       form.appendChild(input);
     });
     
-    // Add form to document, submit, then remove
+    // Add form to document and submit
     document.body.appendChild(form);
+    
+    console.log('Submitting form to:', GOOGLE_SCRIPT_URL);
+    console.log('Form fields:', fields.map(([name, value]) => `${name}: ${value}`));
+    
     form.submit();
     
-    // Clean up - remove form and close the popup after a short delay
+    // Clean up after a delay
     setTimeout(() => {
-      document.body.removeChild(form);
-      // Try to close the popup window that opened
-      const popups = window.open('', '_blank');
-      if (popups) popups.close();
+      if (document.body.contains(form)) {
+        document.body.removeChild(form);
+      }
     }, 1000);
     
-    console.log('Data sent to Google Sheets successfully');
+    console.log('Form submitted successfully');
     return { success: true, message: 'Data sent successfully' };
     
   } catch (error) {
