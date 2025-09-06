@@ -5,41 +5,23 @@ const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxy91Eza9RIks
 
 export const submitToGoogleSheets = async (formData) => {
   try {
-    // Create a simple form with individual input fields (most reliable method)
+    // Just submit the form - don't wait for response
     const form = document.createElement('form');
     form.method = 'POST';
     form.action = GOOGLE_SCRIPT_URL;
-    form.target = '_blank'; // Open in new tab
+    form.target = '_blank';
     form.style.display = 'none';
     
-    // Create individual input fields for each piece of data
+    // Add only the main fields
     const fields = [
-      ['timestamp', new Date().toISOString()],
       ['firstName', formData.firstName || ''],
       ['lastName', formData.lastName || ''],
       ['email', formData.email || ''],
       ['phone', formData.phone || ''],
-      ['address', formData.address || ''],
-      ['city', formData.city || ''],
-      ['province', formData.province || ''],
-      ['postalCode', formData.postalCode || ''],
       ['crimeType', formData.crimeType || ''],
-      ['dateOfIncident', formData.dateOfIncident || ''],
-      ['timeOfIncident', formData.timeOfIncident || ''],
-      ['location', formData.location || ''],
-      ['description', formData.description || ''],
-      ['suspects', formData.suspects || ''],
-      ['witnesses', formData.witnesses || ''],
-      ['evidence', formData.evidence || ''],
-      ['urgency', formData.urgency || ''],
-      ['anonymous', formData.anonymous ? 'true' : 'false'],
-      ['followUp', formData.followUp ? 'true' : 'false'],
-      ['additionalInfo', formData.additionalInfo || ''],
-      ['userAgent', navigator.userAgent || ''],
-      ['referrer', document.referrer || '']
+      ['description', formData.description || '']
     ];
     
-    // Add each field as a hidden input
     fields.forEach(([name, value]) => {
       const input = document.createElement('input');
       input.type = 'hidden';
@@ -48,26 +30,21 @@ export const submitToGoogleSheets = async (formData) => {
       form.appendChild(input);
     });
     
-    // Add form to document and submit
     document.body.appendChild(form);
-    
-    console.log('Submitting form to:', GOOGLE_SCRIPT_URL);
-    console.log('Form fields:', fields.map(([name, value]) => `${name}: ${value}`));
-    
     form.submit();
     
-    // Clean up after a delay
+    // Clean up
     setTimeout(() => {
       if (document.body.contains(form)) {
         document.body.removeChild(form);
       }
     }, 1000);
     
-    console.log('Form submitted successfully');
+    // Always return success - don't wait for response
     return { success: true, message: 'Data sent successfully' };
     
   } catch (error) {
-    console.error('Error submitting to Google Sheets:', error);
+    console.error('Error:', error);
     return { success: false, error: error.message };
   }
 };
