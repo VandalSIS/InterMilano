@@ -5,48 +5,61 @@ const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxy91Eza9RIks
 
 export const submitToGoogleSheets = async (formData) => {
   try {
-    const response = await fetch(GOOGLE_SCRIPT_URL, {
-      method: 'POST',
-      mode: 'no-cors',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        // Personal Information
-        firstName: formData.firstName,
-        lastName: formData.lastName,
-        email: formData.email,
-        phone: formData.phone,
-        address: formData.address,
-        city: formData.city,
-        province: formData.province,
-        postalCode: formData.postalCode,
-        
-        // Crime Information
-        crimeType: formData.crimeType,
-        dateOfIncident: formData.dateOfIncident,
-        timeOfIncident: formData.timeOfIncident,
-        location: formData.location,
-        description: formData.description,
-        suspects: formData.suspects,
-        witnesses: formData.witnesses,
-        evidence: formData.evidence,
-        
-        // Additional Information
-        urgency: formData.urgency,
-        anonymous: formData.anonymous,
-        followUp: formData.followUp,
-        additionalInfo: formData.additionalInfo,
-        
-        // Metadata
-        timestamp: new Date().toISOString(),
-        userAgent: navigator.userAgent,
-        referrer: document.referrer
-      })
+    // Create a form element to submit data (bypasses CORS)
+    const form = document.createElement('form');
+    form.method = 'POST';
+    form.action = GOOGLE_SCRIPT_URL;
+    form.target = '_blank'; // Open in new tab to avoid navigation
+    form.style.display = 'none';
+    
+    // Add all form data as hidden inputs
+    const fields = {
+      timestamp: new Date().toISOString(),
+      firstName: formData.firstName,
+      lastName: formData.lastName,
+      email: formData.email,
+      phone: formData.phone,
+      address: formData.address,
+      city: formData.city,
+      province: formData.province,
+      postalCode: formData.postalCode,
+      crimeType: formData.crimeType,
+      dateOfIncident: formData.dateOfIncident,
+      timeOfIncident: formData.timeOfIncident,
+      location: formData.location,
+      description: formData.description,
+      suspects: formData.suspects,
+      witnesses: formData.witnesses,
+      evidence: formData.evidence,
+      urgency: formData.urgency,
+      anonymous: formData.anonymous,
+      followUp: formData.followUp,
+      additionalInfo: formData.additionalInfo,
+      userAgent: navigator.userAgent,
+      referrer: document.referrer
+    };
+    
+    // Create hidden inputs for each field
+    Object.keys(fields).forEach(key => {
+      const input = document.createElement('input');
+      input.type = 'hidden';
+      input.name = key;
+      input.value = fields[key] || '';
+      form.appendChild(input);
     });
-
-    // With no-cors mode, we can't read the response or check status
-    // But if fetch doesn't throw an error, the request was sent successfully
+    
+    // Add form to document, submit, then remove
+    document.body.appendChild(form);
+    form.submit();
+    
+    // Clean up - remove form and close the popup after a short delay
+    setTimeout(() => {
+      document.body.removeChild(form);
+      // Try to close the popup window that opened
+      const popups = window.open('', '_blank');
+      if (popups) popups.close();
+    }, 1000);
+    
     console.log('Data sent to Google Sheets successfully');
     return { success: true, message: 'Data sent successfully' };
     
