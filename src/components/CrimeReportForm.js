@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import styled from 'styled-components';
 import { motion } from 'framer-motion';
 import { ShieldIcon, ComputerIcon, ScaleIcon, GlobeIcon, StarIcon, CheckIcon } from './CSSIcons';
+import { submitToGoogleSheets } from '../utils/googleSheets';
 
 const FormContainer = styled.div`
   background: var(--color-white);
@@ -431,22 +432,28 @@ const CrimeReportForm = () => {
     setIsSubmitting(true);
     
     try {
-      // Simulate form submission
-      await new Promise(resolve => setTimeout(resolve, 2000));
+      // Submit to Google Sheets
+      const result = await submitToGoogleSheets(formData);
       
-      // Here you would normally send the data to your backend
-      console.log('Crime Report Submitted:', formData);
-      
-      setSubmitStatus('success');
-      setFormData({
-        firstName: '', lastName: '', email: '', phone: '', address: '',
-        city: '', province: '', postalCode: '', crimeType: '', dateOfIncident: '',
-        timeOfIncident: '', location: '', description: '', suspects: '',
-        witnesses: '', evidence: '', urgency: 'medium', anonymous: false,
-        followUp: false, additionalInfo: ''
-      });
+      if (result.success) {
+        setSubmitStatus('success');
+        // Reset form after successful submission
+        setFormData({
+          firstName: '', lastName: '', email: '', phone: '', address: '',
+          city: '', province: '', postalCode: '', crimeType: '', dateOfIncident: '',
+          timeOfIncident: '', location: '', description: '', suspects: '',
+          witnesses: '', evidence: '', urgency: 'medium', anonymous: false,
+          followUp: false, additionalInfo: ''
+        });
+        // Reset to first step
+        setCurrentStep(1);
+      } else {
+        setSubmitStatus('error');
+        console.error('Google Sheets submission failed:', result.error);
+      }
     } catch (error) {
       setSubmitStatus('error');
+      console.error('Form submission error:', error);
     } finally {
       setIsSubmitting(false);
     }
