@@ -4,14 +4,13 @@
   "description": "Professional INTERPOL Website for Tender Submission",
   "private": true,
   "dependencies": {
-    "@vercel/analytics": "^1.5.0",
-    "framer-motion": "^8.5.2",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
-    "react-icons": "^4.7.1",
     "react-router-dom": "^6.8.1",
     "react-scripts": "5.0.1",
-    "styled-components": "^5.3.6"
+    "styled-components": "^5.3.6",
+    "framer-motion": "^8.5.2",
+    "react-icons": "^4.7.1"
   },
   "scripts": {
     "start": "react-scripts start",

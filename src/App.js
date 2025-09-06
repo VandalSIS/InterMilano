@@ -1,7 +1,6 @@
 import React from 'react';
 import { Routes, Route } from 'react-router-dom';
 import styled from 'styled-components';
-import { Analytics } from '@vercel/analytics/react';
 import Header from './components/Header';
 import Footer from './components/Footer';
 import Home from './pages/Home';
@@ -35,7 +34,6 @@ function App() {
         </Routes>
       </MainContent>
       <Footer />
-      <Analytics />
     </AppContainer>
   );
 }
