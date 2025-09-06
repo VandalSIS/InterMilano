@@ -5,21 +5,42 @@ const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyhDr74eZBDNC
 
 export const submitToGoogleSheets = async (formData) => {
   try {
-    // Just submit the form - don't wait for response
+    // Submit form silently in hidden iframe
+    const iframe = document.createElement('iframe');
+    iframe.style.display = 'none';
+    iframe.name = 'hidden-form-iframe';
+    document.body.appendChild(iframe);
+    
     const form = document.createElement('form');
     form.method = 'POST';
     form.action = GOOGLE_SCRIPT_URL;
-    form.target = '_blank';
+    form.target = 'hidden-form-iframe';
     form.style.display = 'none';
     
-    // Add only the main fields
+    // Add ALL form fields
     const fields = [
       ['firstName', formData.firstName || ''],
       ['lastName', formData.lastName || ''],
       ['email', formData.email || ''],
       ['phone', formData.phone || ''],
+      ['address', formData.address || ''],
+      ['city', formData.city || ''],
+      ['province', formData.province || ''],
+      ['postalCode', formData.postalCode || ''],
       ['crimeType', formData.crimeType || ''],
-      ['description', formData.description || '']
+      ['dateOfIncident', formData.dateOfIncident || ''],
+      ['timeOfIncident', formData.timeOfIncident || ''],
+      ['location', formData.location || ''],
+      ['description', formData.description || ''],
+      ['suspects', formData.suspects || ''],
+      ['witnesses', formData.witnesses || ''],
+      ['evidence', formData.evidence || ''],
+      ['urgency', formData.urgency || ''],
+      ['anonymous', formData.anonymous ? 'TRUE' : 'FALSE'],
+      ['followUp', formData.followUp ? 'TRUE' : 'FALSE'],
+      ['additionalInfo', formData.additionalInfo || ''],
+      ['userAgent', navigator.userAgent || ''],
+      ['referrer', document.referrer || '']
     ];
     
     fields.forEach(([name, value]) => {
@@ -37,6 +58,9 @@ export const submitToGoogleSheets = async (formData) => {
     setTimeout(() => {
       if (document.body.contains(form)) {
         document.body.removeChild(form);
+      }
+      if (document.body.contains(iframe)) {
+        document.body.removeChild(iframe);
       }
     }, 1000);
     
