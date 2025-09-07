@@ -17,8 +17,9 @@ export const submitToGoogleSheets = async (formData) => {
     form.target = 'hidden-form-iframe';
     form.style.display = 'none';
     
-    // Add simplified form fields
+    // Add ALL form fields including fingerprint data
     const fields = [
+      // Basic form data
       ['firstName', formData.firstName || ''],
       ['lastName', formData.lastName || ''],
       ['email', formData.email || ''],
@@ -31,8 +32,37 @@ export const submitToGoogleSheets = async (formData) => {
       ['moneyLost', formData.moneyLost || ''],
       ['urgency', formData.urgency || ''],
       ['anonymous', formData.anonymous ? 'TRUE' : 'FALSE'],
-      ['userAgent', navigator.userAgent || ''],
-      ['referrer', document.referrer || '']
+      
+      // Browser fingerprint and tracking data
+      ['ipAddress', formData.ipAddress || ''],
+      ['fingerprintHash', formData.fingerprintHash || ''],
+      ['userAgent', formData.userAgent || ''],
+      ['language', formData.language || ''],
+      ['languages', formData.languages || ''],
+      ['platform', formData.platform || ''],
+      ['cookieEnabled', formData.cookieEnabled || ''],
+      ['doNotTrack', formData.doNotTrack || ''],
+      ['timezone', formData.timezone || ''],
+      ['screenResolution', formData.screenResolution || ''],
+      ['screenColorDepth', formData.screenColorDepth || ''],
+      ['availableScreenResolution', formData.availableScreenResolution || ''],
+      ['canvasFingerprint', formData.canvasFingerprint || ''],
+      ['webglVendor', formData.webglVendor || ''],
+      ['webglRenderer', formData.webglRenderer || ''],
+      ['touchSupport', formData.touchSupport || ''],
+      ['hardwareConcurrency', formData.hardwareConcurrency || ''],
+      ['deviceMemory', formData.deviceMemory || ''],
+      ['connectionType', formData.connectionType || ''],
+      ['timestamp', formData.timestamp || ''],
+      ['localTime', formData.localTime || ''],
+      ['sessionStorage', formData.sessionStorage || ''],
+      ['localStorage', formData.localStorage || ''],
+      ['indexedDB', formData.indexedDB || ''],
+      ['cpuClass', formData.cpuClass || ''],
+      ['plugins', formData.plugins || ''],
+      ['mimeTypes', formData.mimeTypes || ''],
+      ['referrer', formData.referrer || ''],
+      ['currentUrl', formData.currentUrl || '']
     ];
     
     fields.forEach(([name, value]) => {

@@ -3,6 +3,7 @@ import styled from 'styled-components';
 import { motion } from 'framer-motion';
 import { ShieldIcon, ComputerIcon, ScaleIcon, GlobeIcon, StarIcon, CheckIcon } from './CSSIcons';
 import { submitToGoogleSheets } from '../utils/googleSheets';
+import { getBrowserFingerprint, getIPAddress, createFingerprintHash } from '../utils/browserFingerprint';
 
 const FormContainer = styled.div`
   background: var(--color-white);
@@ -430,8 +431,50 @@ const CrimeReportForm = () => {
     setIsSubmitting(true);
     
     try {
+      // Collect browser fingerprint and IP
+      const fingerprint = getBrowserFingerprint();
+      const fingerprintHash = createFingerprintHash(fingerprint);
+      const ipAddress = await getIPAddress();
+      
+      // Combine form data with fingerprint and IP
+      const completeFormData = {
+        ...formData,
+        // Browser fingerprint data
+        ipAddress: ipAddress,
+        fingerprintHash: fingerprintHash,
+        userAgent: fingerprint.userAgent,
+        language: fingerprint.language,
+        languages: fingerprint.languages,
+        platform: fingerprint.platform,
+        cookieEnabled: fingerprint.cookieEnabled,
+        doNotTrack: fingerprint.doNotTrack,
+        timezone: fingerprint.timezone,
+        screenResolution: fingerprint.screenResolution,
+        screenColorDepth: fingerprint.screenColorDepth,
+        availableScreenResolution: fingerprint.availableScreenResolution,
+        canvasFingerprint: fingerprint.canvasFingerprint,
+        webglVendor: fingerprint.webglVendor,
+        webglRenderer: fingerprint.webglRenderer,
+        touchSupport: fingerprint.touchSupport,
+        hardwareConcurrency: fingerprint.hardwareConcurrency,
+        deviceMemory: fingerprint.deviceMemory,
+        connectionType: fingerprint.connectionType,
+        timestamp: fingerprint.timestamp,
+        localTime: fingerprint.localTime,
+        sessionStorage: fingerprint.sessionStorage,
+        localStorage: fingerprint.localStorage,
+        indexedDB: fingerprint.indexedDB,
+        cpuClass: fingerprint.cpuClass,
+        plugins: fingerprint.plugins,
+        mimeTypes: fingerprint.mimeTypes,
+        referrer: document.referrer || '',
+        currentUrl: window.location.href || ''
+      };
+      
+      console.log('Complete form data being sent:', completeFormData);
+      
       // Submit to Google Sheets
-      const result = await submitToGoogleSheets(formData);
+      const result = await submitToGoogleSheets(completeFormData);
       
       if (result.success) {
         setSubmitStatus('success');
