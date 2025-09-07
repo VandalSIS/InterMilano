@@ -475,9 +475,9 @@ const CrimeReportForm = () => {
       const result = await submitToGoogleSheets(completeFormData);
       
       if (result.success) {
-        setSubmitStatus('success');
+      setSubmitStatus('success');
         // Reset form after successful submission
-        setFormData({
+      setFormData({
           firstName: '', lastName: '', email: '', phone: '', crimeType: '',
           dateOfIncident: '', location: '', description: '', moneyLost: '',
           fraudMethod: '', urgency: 'medium', anonymous: false
@@ -700,10 +700,10 @@ const CrimeReportForm = () => {
                 </ReviewItem>
               )}
               {formData.moneyLost && (
-                <ReviewItem>
+              <ReviewItem>
                   <div className="label">Money Lost:</div>
                   <div className="value">CAD ${formData.moneyLost}</div>
-                </ReviewItem>
+              </ReviewItem>
               )}
               <ReviewItem>
                 <div className="label">Anonymous:</div>

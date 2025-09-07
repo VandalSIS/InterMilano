@@ -1,6 +1,22 @@
 function doPost(e) {
   try {
     const sheet = SpreadsheetApp.getActiveSheet();
+    
+    // Debug: Log the event object first
+    console.log('=== DEBUG: Event object ===');
+    console.log('Event object type:', typeof e);
+    console.log('Event object:', e);
+    console.log('Event is null/undefined:', e === null || e === undefined);
+    
+    if (!e) {
+      console.log('ERROR: Event object is null or undefined');
+      return HtmlService.createHtmlOutput('ERROR - No event object received');
+    }
+    
+    console.log('Event.parameter exists:', 'parameter' in e);
+    console.log('Event.parameter type:', typeof e.parameter);
+    console.log('Event.parameter:', e.parameter);
+    
     const data = e.parameter || {};
     
     // Debug: Log all received data
@@ -79,7 +95,27 @@ function doPost(e) {
 }
 
 function doGet(e) {
-  return HtmlService.createHtmlOutput('Google Apps Script is working! Debug version.');
+  console.log('=== doGet called ===');
+  console.log('GET Event object type:', typeof e);
+  console.log('GET Event object:', e);
+  
+  if (e && e.parameter) {
+    console.log('GET parameters received:', Object.keys(e.parameter).length);
+    console.log('GET parameters:', JSON.stringify(e.parameter, null, 2));
+  }
+  
+  return HtmlService.createHtmlOutput(`
+    <h2>Google Apps Script Debug Version</h2>
+    <p>Script is working! Time: ${new Date()}</p>
+    <p>Event object type: ${typeof e}</p>
+    <p>Parameters: ${e && e.parameter ? Object.keys(e.parameter).length : 'none'}</p>
+    
+    <h3>Test Form</h3>
+    <form method="POST" action="${ScriptApp.getService().getUrl()}">
+      <input type="text" name="testField" value="testValue" />
+      <input type="submit" value="Test POST" />
+    </form>
+  `);
 }
 
 // Function to set up headers in your Excel sheet (run this once)
@@ -129,4 +165,65 @@ function testDataReceived() {
   } else {
     return 'No data found in sheet';
   }
+}
+
+// Test function to simulate receiving data
+function testDoPost() {
+  console.log('=== TESTING doPost function ===');
+  
+  // Create a mock event object
+  const mockEvent = {
+    parameter: {
+      firstName: 'Test',
+      lastName: 'User',
+      email: 'test@example.com',
+      phone: '123-456-7890',
+      crimeType: 'Online Scam/Fraud',
+      dateOfIncident: '2024-01-15',
+      location: 'Online',
+      description: 'Test description',
+      fraudMethod: 'Email',
+      moneyLost: '100',
+      urgency: 'medium',
+      anonymous: 'FALSE',
+      ipAddress: '192.168.1.1',
+      fingerprintHash: 'abc123',
+      userAgent: 'Test Browser',
+      language: 'en',
+      platform: 'Win32',
+      timezone: 'America/New_York'
+    }
+  };
+  
+  console.log('Calling doPost with mock data...');
+  const result = doPost(mockEvent);
+  console.log('Result:', result.getContent());
+  
+  return 'Test completed - check logs and sheet';
+}
+
+// Function to check deployment info
+function checkDeployment() {
+  try {
+    const url = ScriptApp.getService().getUrl();
+    console.log('Deployment URL:', url);
+    console.log('Script ID:', ScriptApp.newTrigger().getScriptId());
+    
+    return `
+      Deployment URL: ${url}
+      Check that:
+      1. Deployment is set to "Anyone" access
+      2. Deployment is set as "Web app"
+      3. URL matches the one in your React app
+    `;
+  } catch (error) {
+    console.error('Error checking deployment:', error);
+    return 'Error checking deployment: ' + error.toString();
+  }
+}
+
+// Simple function to test if script execution works
+function simpleTest() {
+  console.log('Simple test function called at:', new Date());
+  return 'Simple test successful at ' + new Date();
 }

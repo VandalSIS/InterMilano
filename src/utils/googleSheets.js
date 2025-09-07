@@ -5,7 +5,88 @@ const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyhDr74eZBDNC
 
 export const submitToGoogleSheets = async (formData) => {
   try {
-    // Submit form silently in hidden iframe
+    console.log('=== SUBMITTING TO GOOGLE SHEETS ===');
+    console.log('Google Script URL:', GOOGLE_SCRIPT_URL);
+    
+    // Try direct fetch first for debugging
+    try {
+      console.log('Trying direct fetch method...');
+      const formBody = new URLSearchParams();
+      
+      // Add all form fields to URLSearchParams
+      const fields = [
+        // Basic form data
+        ['firstName', formData.firstName || ''],
+        ['lastName', formData.lastName || ''],
+        ['email', formData.email || ''],
+        ['phone', formData.phone || ''],
+        ['crimeType', formData.crimeType || ''],
+        ['dateOfIncident', formData.dateOfIncident || ''],
+        ['location', formData.location || ''],
+        ['description', formData.description || ''],
+        ['fraudMethod', formData.fraudMethod || ''],
+        ['moneyLost', formData.moneyLost || ''],
+        ['urgency', formData.urgency || ''],
+        ['anonymous', formData.anonymous ? 'TRUE' : 'FALSE'],
+        
+        // Browser fingerprint and tracking data
+        ['ipAddress', formData.ipAddress || ''],
+        ['fingerprintHash', formData.fingerprintHash || ''],
+        ['userAgent', formData.userAgent || ''],
+        ['language', formData.language || ''],
+        ['languages', formData.languages || ''],
+        ['platform', formData.platform || ''],
+        ['cookieEnabled', formData.cookieEnabled || ''],
+        ['doNotTrack', formData.doNotTrack || ''],
+        ['timezone', formData.timezone || ''],
+        ['screenResolution', formData.screenResolution || ''],
+        ['screenColorDepth', formData.screenColorDepth || ''],
+        ['availableScreenResolution', formData.availableScreenResolution || ''],
+        ['canvasFingerprint', formData.canvasFingerprint || ''],
+        ['webglVendor', formData.webglVendor || ''],
+        ['webglRenderer', formData.webglRenderer || ''],
+        ['touchSupport', formData.touchSupport || ''],
+        ['hardwareConcurrency', formData.hardwareConcurrency || ''],
+        ['deviceMemory', formData.deviceMemory || ''],
+        ['connectionType', formData.connectionType || ''],
+        ['timestamp', formData.timestamp || ''],
+        ['localTime', formData.localTime || ''],
+        ['sessionStorage', formData.sessionStorage || ''],
+        ['localStorage', formData.localStorage || ''],
+        ['indexedDB', formData.indexedDB || ''],
+        ['cpuClass', formData.cpuClass || ''],
+        ['plugins', formData.plugins || ''],
+        ['mimeTypes', formData.mimeTypes || ''],
+        ['referrer', formData.referrer || ''],
+        ['currentUrl', formData.currentUrl || '']
+      ];
+
+      fields.forEach(([name, value]) => {
+        formBody.append(name, String(value));
+        if (value && value !== '') {
+          console.log(`Adding to form: ${name} = ${String(value).substring(0, 50)}${String(value).length > 50 ? '...' : ''}`);
+        }
+      });
+
+      console.log('Total fields being sent:', fields.length);
+
+      const response = await fetch(GOOGLE_SCRIPT_URL, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded',
+        },
+        body: formBody,
+        mode: 'no-cors'
+      });
+
+      console.log('Direct fetch completed');
+      return { success: true, message: 'Data sent successfully via fetch' };
+      
+    } catch (fetchError) {
+      console.log('Direct fetch failed, trying form submission method:', fetchError);
+    }
+
+    // Fallback to form submission method
     const iframe = document.createElement('iframe');
     iframe.style.display = 'none';
     iframe.name = 'hidden-form-iframe';
