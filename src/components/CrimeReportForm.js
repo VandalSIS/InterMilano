@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
 import { motion } from 'framer-motion';
-import { ShieldIcon, ComputerIcon, ScaleIcon, GlobeIcon, StarIcon, CheckIcon } from './CSSIcons';
+// Icons removed - not needed for simplified form
 import { submitToGoogleSheets } from '../utils/googleSheets';
 import { getBrowserFingerprint, getIPAddress, createFingerprintHash } from '../utils/browserFingerprint';
 
@@ -187,12 +187,7 @@ const Select = styled.select`
   }
 `;
 
-const CheckboxGroup = styled.div`
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-  gap: var(--spacing-md);
-  margin-top: var(--spacing-sm);
-`;
+// CheckboxGroup removed - not used in simplified form
 
 const CheckboxItem = styled.label`
   display: flex;
