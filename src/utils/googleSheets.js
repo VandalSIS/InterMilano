@@ -17,28 +17,20 @@ export const submitToGoogleSheets = async (formData) => {
     form.target = 'hidden-form-iframe';
     form.style.display = 'none';
     
-    // Add ALL form fields
+    // Add simplified form fields
     const fields = [
       ['firstName', formData.firstName || ''],
       ['lastName', formData.lastName || ''],
       ['email', formData.email || ''],
       ['phone', formData.phone || ''],
-      ['address', formData.address || ''],
-      ['city', formData.city || ''],
-      ['province', formData.province || ''],
-      ['postalCode', formData.postalCode || ''],
       ['crimeType', formData.crimeType || ''],
       ['dateOfIncident', formData.dateOfIncident || ''],
-      ['timeOfIncident', formData.timeOfIncident || ''],
       ['location', formData.location || ''],
       ['description', formData.description || ''],
-      ['suspects', formData.suspects || ''],
-      ['witnesses', formData.witnesses || ''],
-      ['evidence', formData.evidence || ''],
+      ['fraudMethod', formData.fraudMethod || ''],
+      ['moneyLost', formData.moneyLost || ''],
       ['urgency', formData.urgency || ''],
       ['anonymous', formData.anonymous ? 'TRUE' : 'FALSE'],
-      ['followUp', formData.followUp ? 'TRUE' : 'FALSE'],
-      ['additionalInfo', formData.additionalInfo || ''],
       ['userAgent', navigator.userAgent || ''],
       ['referrer', document.referrer || '']
     ];

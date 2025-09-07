@@ -332,26 +332,20 @@ const CrimeReportForm = () => {
     lastName: '',
     email: '',
     phone: '',
-    address: '',
-    city: '',
-    province: '',
-    postalCode: '',
     
     // Crime Information
     crimeType: '',
     dateOfIncident: '',
-    timeOfIncident: '',
     location: '',
     description: '',
-    suspects: '',
-    witnesses: '',
-    evidence: '',
+    
+    // Fraud/Scam specific fields
+    moneyLost: '',
+    fraudMethod: '',
     
     // Additional Information
     urgency: 'medium',
-    anonymous: false,
-    followUp: false,
-    additionalInfo: ''
+    anonymous: false
   });
 
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -360,33 +354,39 @@ const CrimeReportForm = () => {
   const steps = [
     { id: 1, label: 'Personal Info', title: 'Personal Information' },
     { id: 2, label: 'Crime Details', title: 'Crime Information' },
-    { id: 3, label: 'Additional', title: 'Additional Options' },
-    { id: 4, label: 'Review', title: 'Review & Submit' }
+    { id: 3, label: 'Review', title: 'Review & Submit' }
   ];
 
   const totalSteps = steps.length;
   const progressPercentage = (currentStep / totalSteps) * 100;
 
   const crimeTypes = [
+    'Online Scam/Fraud',
+    'Phone Scam',
+    'Email Fraud',
+    'Investment Fraud',
+    'Romance Scam',
+    'Identity Theft',
+    'Credit Card Fraud',
+    'Banking Fraud',
+    'Cryptocurrency Fraud',
     'Theft/Burglary',
     'Assault',
-    'Fraud/Scam',
-    'Cybercrime',
-    'Drug-related',
-    'Domestic Violence',
-    'Hate Crime',
-    'Terrorism',
-    'Human Trafficking',
-    'Environmental Crime',
-    'Financial Crime',
     'Other'
   ];
 
-  const provinces = [
-    'Alberta', 'British Columbia', 'Manitoba', 'New Brunswick',
-    'Newfoundland and Labrador', 'Northwest Territories', 'Nova Scotia',
-    'Nunavut', 'Ontario', 'Prince Edward Island', 'Quebec', 'Saskatchewan', 'Yukon'
+  const fraudMethods = [
+    'Phone Call',
+    'Email',
+    'Text Message',
+    'Social Media',
+    'Dating App/Website',
+    'Fake Website',
+    'In Person',
+    'Mail/Letter',
+    'Other'
   ];
+
 
   const handleInputChange = (e) => {
     const { name, value, type, checked } = e.target;
@@ -419,8 +419,6 @@ const CrimeReportForm = () => {
       case 2:
         return formData.crimeType && formData.dateOfIncident && formData.location && formData.description;
       case 3:
-        return true; // Additional options are optional
-      case 4:
         return true; // Review step
       default:
         return false;
@@ -439,11 +437,9 @@ const CrimeReportForm = () => {
         setSubmitStatus('success');
         // Reset form after successful submission
         setFormData({
-          firstName: '', lastName: '', email: '', phone: '', address: '',
-          city: '', province: '', postalCode: '', crimeType: '', dateOfIncident: '',
-          timeOfIncident: '', location: '', description: '', suspects: '',
-          witnesses: '', evidence: '', urgency: 'medium', anonymous: false,
-          followUp: false, additionalInfo: ''
+          firstName: '', lastName: '', email: '', phone: '', crimeType: '',
+          dateOfIncident: '', location: '', description: '', moneyLost: '',
+          fraudMethod: '', urgency: 'medium', anonymous: false
         });
         // Reset to first step
         setCurrentStep(1);
@@ -517,58 +513,6 @@ const CrimeReportForm = () => {
                 />
               </FormGroup>
             </FormRow>
-
-            <FormGroup>
-              <Label htmlFor="address">Address</Label>
-              <Input
-                type="text"
-                id="address"
-                name="address"
-                value={formData.address}
-                onChange={handleInputChange}
-                placeholder="Street address"
-              />
-            </FormGroup>
-
-            <FormRow>
-              <FormGroup>
-                <Label htmlFor="city">City</Label>
-                <Input
-                  type="text"
-                  id="city"
-                  name="city"
-                  value={formData.city}
-                  onChange={handleInputChange}
-                  placeholder="City"
-                />
-              </FormGroup>
-              <FormGroup>
-                <Label htmlFor="province">Province/Territory</Label>
-                <Select
-                  id="province"
-                  name="province"
-                  value={formData.province}
-                  onChange={handleInputChange}
-                >
-                  <option value="">Select Province/Territory</option>
-                  {provinces.map(province => (
-                    <option key={province} value={province}>{province}</option>
-                  ))}
-                </Select>
-              </FormGroup>
-            </FormRow>
-
-            <FormGroup>
-              <Label htmlFor="postalCode">Postal Code</Label>
-              <Input
-                type="text"
-                id="postalCode"
-                name="postalCode"
-                value={formData.postalCode}
-                onChange={handleInputChange}
-                placeholder="A1A 1A1"
-              />
-            </FormGroup>
           </StepSection>
         );
 
@@ -593,23 +537,6 @@ const CrimeReportForm = () => {
                 </Select>
               </FormGroup>
               <FormGroup>
-                <Label htmlFor="urgency">Urgency Level</Label>
-                <Select
-                  id="urgency"
-                  name="urgency"
-                  value={formData.urgency}
-                  onChange={handleInputChange}
-                >
-                  <option value="low">Low</option>
-                  <option value="medium">Medium</option>
-                  <option value="high">High</option>
-                  <option value="critical">Critical</option>
-                </Select>
-              </FormGroup>
-            </FormRow>
-
-            <FormRow>
-              <FormGroup>
                 <Label htmlFor="dateOfIncident">Date of Incident *</Label>
                 <Input
                   type="date"
@@ -620,83 +547,68 @@ const CrimeReportForm = () => {
                   required
                 />
               </FormGroup>
-              <FormGroup>
-                <Label htmlFor="timeOfIncident">Time of Incident</Label>
-                <Input
-                  type="time"
-                  id="timeOfIncident"
-                  name="timeOfIncident"
-                  value={formData.timeOfIncident}
-                  onChange={handleInputChange}
-                />
-              </FormGroup>
             </FormRow>
 
             <FormGroup>
-              <Label htmlFor="location">Location of Incident *</Label>
+              <Label htmlFor="location">Location/Website/Platform *</Label>
               <Input
                 type="text"
                 id="location"
                 name="location"
                 value={formData.location}
                 onChange={handleInputChange}
-                placeholder="Specific address or location where the crime occurred"
+                placeholder="Where did this happen? (website, phone, in person, etc.)"
                 required
               />
             </FormGroup>
 
+            {(formData.crimeType.includes('Scam') || formData.crimeType.includes('Fraud')) && (
+              <>
+                <FormRow>
+                  <FormGroup>
+                    <Label htmlFor="fraudMethod">How were you contacted?</Label>
+                    <Select
+                      id="fraudMethod"
+                      name="fraudMethod"
+                      value={formData.fraudMethod}
+                      onChange={handleInputChange}
+                    >
+                      <option value="">Select method</option>
+                      {fraudMethods.map(method => (
+                        <option key={method} value={method}>{method}</option>
+                      ))}
+                    </Select>
+                  </FormGroup>
+                  <FormGroup>
+                    <Label htmlFor="moneyLost">Amount of Money Lost (CAD)</Label>
+                    <Input
+                      type="number"
+                      id="moneyLost"
+                      name="moneyLost"
+                      value={formData.moneyLost}
+                      onChange={handleInputChange}
+                      placeholder="0"
+                      min="0"
+                      step="0.01"
+                    />
+                  </FormGroup>
+                </FormRow>
+              </>
+            )}
+
             <FormGroup>
-              <Label htmlFor="description">Description of Incident *</Label>
+              <Label htmlFor="description">Description of What Happened *</Label>
               <TextArea
                 id="description"
                 name="description"
                 value={formData.description}
                 onChange={handleInputChange}
-                placeholder="Please provide a detailed description of what happened, including sequence of events, any threats made, weapons used, etc."
+                placeholder="Please describe what happened in detail..."
                 required
               />
             </FormGroup>
 
             <FormGroup>
-              <Label htmlFor="suspects">Suspect Information</Label>
-              <TextArea
-                id="suspects"
-                name="suspects"
-                value={formData.suspects}
-                onChange={handleInputChange}
-                placeholder="Describe any suspects: physical appearance, clothing, behavior, names if known, etc."
-              />
-            </FormGroup>
-
-            <FormGroup>
-              <Label htmlFor="witnesses">Witness Information</Label>
-              <TextArea
-                id="witnesses"
-                name="witnesses"
-                value={formData.witnesses}
-                onChange={handleInputChange}
-                placeholder="List any witnesses and their contact information if available"
-              />
-            </FormGroup>
-
-            <FormGroup>
-              <Label htmlFor="evidence">Evidence/Additional Information</Label>
-              <TextArea
-                id="evidence"
-                name="evidence"
-                value={formData.evidence}
-                onChange={handleInputChange}
-                placeholder="Describe any evidence, photos, videos, documents, or other relevant information"
-              />
-            </FormGroup>
-          </StepSection>
-        );
-
-      case 3:
-        return (
-          <StepSection active={currentStep === 3}>
-            <StepTitle>Additional Options</StepTitle>
-            <CheckboxGroup>
               <CheckboxItem>
                 <input
                   type="checkbox"
@@ -705,36 +617,15 @@ const CrimeReportForm = () => {
                   checked={formData.anonymous}
                   onChange={handleInputChange}
                 />
-                <span>Submit anonymously</span>
+                <span>Submit anonymously (your personal info won't be shared)</span>
               </CheckboxItem>
-              <CheckboxItem>
-                <input
-                  type="checkbox"
-                  id="followUp"
-                  name="followUp"
-                  checked={formData.followUp}
-                  onChange={handleInputChange}
-                />
-                <span>Request follow-up contact</span>
-              </CheckboxItem>
-            </CheckboxGroup>
-
-            <FormGroup>
-              <Label htmlFor="additionalInfo">Additional Information</Label>
-              <TextArea
-                id="additionalInfo"
-                name="additionalInfo"
-                value={formData.additionalInfo}
-                onChange={handleInputChange}
-                placeholder="Any other relevant information you would like to share"
-              />
             </FormGroup>
           </StepSection>
         );
 
-      case 4:
+      case 3:
         return (
-          <StepSection active={currentStep === 4}>
+          <StepSection active={currentStep === 3}>
             <StepTitle>Review Your Report</StepTitle>
             <ReviewSection>
               <ReviewItem>
@@ -761,10 +652,18 @@ const CrimeReportForm = () => {
                 <div className="label">Location:</div>
                 <div className="value">{formData.location}</div>
               </ReviewItem>
-              <ReviewItem>
-                <div className="label">Urgency:</div>
-                <div className="value">{formData.urgency}</div>
-              </ReviewItem>
+              {formData.fraudMethod && (
+                <ReviewItem>
+                  <div className="label">Contact Method:</div>
+                  <div className="value">{formData.fraudMethod}</div>
+                </ReviewItem>
+              )}
+              {formData.moneyLost && (
+                <ReviewItem>
+                  <div className="label">Money Lost:</div>
+                  <div className="value">CAD ${formData.moneyLost}</div>
+                </ReviewItem>
+              )}
               <ReviewItem>
                 <div className="label">Anonymous:</div>
                 <div className="value">{formData.anonymous ? 'Yes' : 'No'}</div>
