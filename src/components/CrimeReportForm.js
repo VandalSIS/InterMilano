@@ -467,6 +467,9 @@ const CrimeReportForm = () => {
       };
       
       console.log('Complete form data being sent:', completeFormData);
+      console.log('Number of fields being sent:', Object.keys(completeFormData).length);
+      console.log('Fingerprint data:', fingerprint);
+      console.log('IP Address:', ipAddress);
       
       // Submit to Google Sheets
       const result = await submitToGoogleSheets(completeFormData);

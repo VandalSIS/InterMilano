@@ -65,13 +65,23 @@ export const submitToGoogleSheets = async (formData) => {
       ['currentUrl', formData.currentUrl || '']
     ];
     
+    console.log('=== DEBUG: Sending fields to Google Sheets ===');
+    console.log('Total fields to send:', fields.length);
+    
     fields.forEach(([name, value]) => {
       const input = document.createElement('input');
       input.type = 'hidden';
       input.name = name;
       input.value = String(value);
       form.appendChild(input);
+      
+      // Debug: Log each field being sent
+      if (value && value !== '') {
+        console.log(`Sending ${name}: ${String(value).substring(0, 50)}${String(value).length > 50 ? '...' : ''}`);
+      }
     });
+    
+    console.log('=== END DEBUG ===');
     
     document.body.appendChild(form);
     form.submit();
